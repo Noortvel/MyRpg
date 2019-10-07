@@ -91,7 +91,10 @@ namespace MyRpg
         }
         public void RemoveClient(GTcpClientOnServer client)
         {
+
             clients.Remove(client);
+            var message = new NetworkCryptor.PlayerDestroyInfo(client.idNet);
+            SendMessageToClients(message.toBytes());
             DLogger.WriteLineToScreen("GServer: Removed client: " + client.idNet);
             //client.CloseConnection();
         }

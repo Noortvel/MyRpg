@@ -10,7 +10,8 @@ namespace MyRpg
         {
             None,
             InstanceCharacter,
-            MoveTo
+            MoveTo,
+            DestroyInstance
         }
         public class NetCommand
         {
@@ -97,6 +98,41 @@ namespace MyRpg
             }
 
         }
+        public class PlayerDestroyInfo : NetCommand
+        {
+            public byte id;
+            public PlayerDestroyInfo(byte id)
+            {
+                this.id = id;
+            }
+            public byte[] toBytes()
+            {
+                byte[] message = new byte[Size];
+                message[0] = (byte)Size;
+                message[1] = Convert.ToByte('g');
+                message[2] = Convert.ToByte('d');
+                message[3] = id;
+                return message;
+            }
+            public static bool isThis(byte[] b)
+            {
+                if (b.Length >= 3 && b[0] == (byte)Size && b[1] == Convert.ToByte('g') && b[2] == Convert.ToByte('d'))
+                {
+                    return true;
+                }
+                return false;
+            }
+            public static PlayerDestroyInfo fromBytes(byte[] b)
+            {
+                if (isThis(b))
+                {
+                    byte id = b[3];
+                    var pmti = new PlayerDestroyInfo(id);
+                    return pmti;
+                }
+                return null;
+            }
+        }
         public static NetworkMessageType GetTypeOfMessage(byte[] b)
         {
             if (PlayerMoveToInfo.isThis(b))
@@ -106,6 +142,10 @@ namespace MyRpg
             else if (PlayerInstanceInfo.isThis(b))
             {
                 return NetworkMessageType.InstanceCharacter;
+            }
+            else if (PlayerDestroyInfo.isThis(b))
+            {
+                return NetworkMessageType.DestroyInstance;
             }
             return NetworkMessageType.None;
         }

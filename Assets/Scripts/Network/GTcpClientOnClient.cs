@@ -59,6 +59,11 @@ namespace MyRpg
                 var pi = NetworkCryptor.PlayerMoveToInfo.fromBytes(message);
                 gameAdmin.AddMessageToQueue(pi);
             }
+            if(type == NetworkCryptor.NetworkMessageType.DestroyInstance)
+            {
+                var pi = NetworkCryptor.PlayerDestroyInfo.fromBytes(message);
+                gameAdmin.AddMessageToQueue(pi);
+            }
         }
     }
 }

@@ -103,7 +103,6 @@ namespace MyRpg
                     controller.Initialize(character, cam, gClient.connectedClient);
                 }
                 connectedCharcters.Add(character);
-                
             }
             if(cmd is NetworkCryptor.PlayerMoveToInfo)
             {
@@ -118,6 +117,20 @@ namespace MyRpg
                 if (character != null)
                 {
                     character.MoveTo(inf.destonation);
+                }
+            }
+            if(cmd is NetworkCryptor.PlayerDestroyInfo)
+            {
+                var inf = (NetworkCryptor.PlayerDestroyInfo)cmd;
+                Character character = null;
+                if (inf != null)
+                {
+                    character = connectedCharcters.Find(fc => fc.netId == inf.id);
+                    if(character != null)
+                    {
+                        connectedCharcters.Remove(character);
+                        Destroy(character.gameObject);
+                    }
                 }
             }
 
